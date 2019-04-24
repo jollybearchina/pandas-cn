@@ -264,7 +264,7 @@ Out[22]:
 
 ### 选取
 
-选择单列， Selecting a single column, which yields a `Series`, equivalent to `df.A`:
+选择单列，生成并返回 `Series`, 等价于`df.A`:
 
 ```python
 In [23]: df['A']
@@ -278,7 +278,7 @@ Out[23]:
 Freq: D, Name: A, dtype: float64
 ```
 
-Selecting via [], which slices the rows.
+通过`[]`来'切片'选取数据。
 
 ```python
 In [24]: df[0:3]
@@ -296,11 +296,11 @@ Out[25]:
 2013-01-04  0.721555 -0.706771 -1.039575  0.271860
 ```
 
-### Selection by Label
+### 根据Label(标签)选取数据
 
-See more in [Selection by Label](http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-label).
+查看更多在[Selection by Label](http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-label).
 
-For getting a cross section using a label:
+使用Label来获取交叉数据:
 
 ```python
 In [26]: df.loc[dates[0]]
@@ -312,7 +312,7 @@ D   -1.135632
 Name: 2013-01-01 00:00:00, dtype: float64
 ```
 
-Selecting on a multi-axis by label:
+使用Label来获取多条数据:
 
 ```python
 In [27]: df.loc[:,['A','B']]
@@ -326,7 +326,7 @@ Out[27]:
 2013-01-06 -0.673690  0.113648
 ```
 
-Showing label slicing, both endpoints are included:
+使用Label来切片，两端的数据都会被选取:
 
 ```python
 In [28]: df.loc['20130102':'20130104',['A','B']]
