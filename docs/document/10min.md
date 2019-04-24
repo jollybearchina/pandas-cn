@@ -5,35 +5,48 @@
 - Object Creation
 - Viewing Data
 - Selection
-    - Getting
-    - Selection by Label
-    - Selection by Position
-    - Boolean Indexing
-    - Setting
-- Missing Data
-- Operations
-    - Stats
-    - Apply
-    - Histogramming
-    - String Methods
-- Merge
-    - Concat
-    - Join
-    - Append
-- Grouping
-- Reshaping
-    - Stack
-    - Pivot Tables
-- Time Series
-- Categoricals
-- Plotting
-- Getting Data In/Out
-    - CSV
-    - HDF5
-    - Excel
-- Gotchas
 
-This is a short introduction to pandas, geared mainly for new users. You can see more complex recipes in the [Cookbook](http://pandas.pydata.org/pandas-docs/stable/cookbook.html#cookbook).
+  - Getting
+  - Selection by Label
+  - Selection by Position
+  - Boolean Indexing
+  - Setting
+
+- Missing Data
+
+- Operations
+
+  - Stats
+  - Apply
+  - Histogramming
+  - String Methods
+
+- Merge
+
+  - Concat
+  - Join
+  - Append
+
+- Grouping
+
+- Reshaping
+
+  - Stack
+  - Pivot Tables
+
+- Time Series
+
+- Categoricals
+
+- Plotting
+
+- Getting Data In/Out
+
+  - CSV
+  - HDF5
+  - Excel
+
+- Gotchas 这是一个对pandas的简短引入，主要是面向新用户，你可以在[这个Cookbook](http://pandas.pydata.org/pandas-docs/stable/cookbook.html#cookbook)学到更多操作.
 
 Customarily, we import as follows:
 
@@ -45,17 +58,17 @@ In [2]: import numpy as np
 In [3]: import matplotlib.pyplot as plt
 ```
 
-## Object Creation
+## 创建对象
 
-See the [Data Structure Intro section](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dsintro).
+查看[数据结构引入部分](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dsintro).
 
-Creating a [Series](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series) by passing a list of values, letting pandas create a default integer index:
+创建[Series对象](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series)，通过传入一个列表，如果没有创建索引的话，pandas会自动生成一个整数组成的索引:
 
 ```python
 In [4]: s = pd.Series([1,3,5,np.nan,6,8])
 
 In [5]: s
-Out[5]: 
+Out[5]:
 0    1.0
 1    3.0
 2    5.0
@@ -65,13 +78,13 @@ Out[5]:
 dtype: float64
 ```
 
-Creating a ``DataFrame`` by passing a NumPy array, with a datetime index and labeled columns:
+创建`DataFrame对象`(aka,数据帧)，通过传入一个numpy.array对象，使用时间作为'索引'，并且给出'列名'：
 
 ```python
 In [6]: dates = pd.date_range('20130101', periods=6)
 
 In [7]: dates
-Out[7]: 
+Out[7]:
 DatetimeIndex(['2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04',
                '2013-01-05', '2013-01-06'],
               dtype='datetime64[ns]', freq='D')
@@ -79,7 +92,7 @@ DatetimeIndex(['2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04',
 In [8]: df = pd.DataFrame(np.random.randn(6,4), index=dates, columns=list('ABCD'))
 
 In [9]: df
-Out[9]: 
+Out[9]:
                    A         B         C         D
 2013-01-01  0.469112 -0.282863 -1.509059 -1.135632
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
@@ -89,7 +102,7 @@ Out[9]:
 2013-01-06 -0.673690  0.113648 -1.478427  0.524988
 ```
 
-Creating a DataFrame by passing a dict of objects that can be converted to series-like.
+创建`DataFrame`，传入一个能转换为类`Series`的字典对象。
 
 ```python
 In [10]: df2 = pd.DataFrame({ 'A' : 1.,
@@ -98,10 +111,10 @@ In [10]: df2 = pd.DataFrame({ 'A' : 1.,
    ....:                      'D' : np.array([3] * 4,dtype='int32'),
    ....:                      'E' : pd.Categorical(["test","train","test","train"]),
    ....:                      'F' : 'foo' })
-   ....: 
+   ....:
 
 In [11]: df2
-Out[11]: 
+Out[11]:
      A          B    C  D      E    F
 0  1.0 2013-01-02  1.0  3   test  foo
 1  1.0 2013-01-02  1.0  3  train  foo
@@ -109,11 +122,11 @@ Out[11]:
 3  1.0 2013-01-02  1.0  3  train  foo
 ```
 
-The columns of the resulting DataFrame have different dtypes.
+生成的`DataFrame`的不同的列有着不同的数据类型(本例中)。
 
 ```python
 In [12]: df2.dtypes
-Out[12]: 
+Out[12]:
 A           float64
 B    datetime64[ns]
 C           float32
@@ -123,7 +136,7 @@ F            object
 dtype: object
 ```
 
-If you’re using IPython, tab completion for column names (as well as public attributes) is automatically enabled. Here’s a subset of the attributes that will be completed:
+如果你在使用IPython，Tab键补全会包含'列名'(和其它的公开属性一样)，下面给出了部分会补全的属性:
 
 ```python
 In [13]: df2.<TAB>
@@ -141,17 +154,17 @@ df2.applymap           df2.consolidate
 df2.D
 ```
 
-As you can see, the columns A, B, C, and D are automatically tab completed. E is there as well; the rest of the attributes have been truncated for brevity.
+如上所示，A,B,C,D,E都是Tab补全的，其余属性因为篇幅原因已经省略了。
 
-## Viewing Data
+## 查看数据
 
-See the [Basics section](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics).
+查看[基础部分 Basics section](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics).
 
-Here is how to view the top and bottom rows of the frame:
+这里是如何查看`DataFrame`的头部和尾部的方法：
 
 ```python
 In [14]: df.head()
-Out[14]: 
+Out[14]:
                    A         B         C         D
 2013-01-01  0.469112 -0.282863 -1.509059 -1.135632
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
@@ -160,18 +173,18 @@ Out[14]:
 2013-01-05 -0.424972  0.567020  0.276232 -1.087401
 
 In [15]: df.tail(3)
-Out[15]: 
+Out[15]:
                    A         B         C         D
 2013-01-04  0.721555 -0.706771 -1.039575  0.271860
 2013-01-05 -0.424972  0.567020  0.276232 -1.087401
 2013-01-06 -0.673690  0.113648 -1.478427  0.524988
 ```
 
-Display the index, columns, and the underlying NumPy data:
+展示索引index，列名columns，和基础的numpy对象：
 
 ```python
 In [16]: df.index
-Out[16]: 
+Out[16]:
 DatetimeIndex(['2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04',
                '2013-01-05', '2013-01-06'],
               dtype='datetime64[ns]', freq='D')
@@ -180,7 +193,7 @@ In [17]: df.columns
 Out[17]: Index(['A', 'B', 'C', 'D'], dtype='object')
 
 In [18]: df.values
-Out[18]: 
+Out[18]:
 array([[ 0.4691, -0.2829, -1.5091, -1.1356],
        [ 1.2121, -0.1732,  0.1192, -1.0442],
        [-0.8618, -2.1046, -0.4949,  1.0718],
@@ -189,11 +202,11 @@ array([[ 0.4691, -0.2829, -1.5091, -1.1356],
        [-0.6737,  0.1136, -1.4784,  0.525 ]])
 ```
 
-[describe()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.describe.html#pandas.DataFrame.describe) shows a quick statistic summary of your data:
+[describe()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.describe.html#pandas.DataFrame.describe)函数给出`DataFrame`的一个简单的描述:
 
 ```python
 In [19]: df.describe()
-Out[19]: 
+Out[19]:
               A         B         C         D
 count  6.000000  6.000000  6.000000  6.000000
 mean   0.073711 -0.431125 -0.687758 -0.233103
@@ -205,11 +218,11 @@ min   -0.861849 -2.104569 -1.509059 -1.135632
 max    1.212112  0.567020  0.276232  1.071804
 ```
 
-Transposing your data:
+转置数据:
 
 ```python
 In [20]: df.T
-Out[20]: 
+Out[20]:
    2013-01-01  2013-01-02  2013-01-03  2013-01-04  2013-01-05  2013-01-06
 A    0.469112    1.212112   -0.861849    0.721555   -0.424972   -0.673690
 B   -0.282863   -0.173215   -2.104569   -0.706771    0.567020    0.113648
@@ -217,11 +230,11 @@ C   -1.509059    0.119209   -0.494929   -1.039575    0.276232   -1.478427
 D   -1.135632   -1.044236    1.071804    0.271860   -1.087401    0.524988
 ```
 
-Sorting by an axis:
+排序，通过指定轴来排序:
 
 ```python
 In [21]: df.sort_index(axis=1, ascending=False)
-Out[21]: 
+Out[21]:
                    D         C         B         A
 2013-01-01 -1.135632 -1.509059 -0.282863  0.469112
 2013-01-02 -1.044236  0.119209 -0.173215  1.212112
@@ -231,11 +244,11 @@ Out[21]:
 2013-01-06  0.524988 -1.478427  0.113648 -0.673690
 ```
 
-Sorting by values:
+排序，根据值来排序(本例是指定列'B'，根据B列的值大小来排序):
 
 ```python
 In [22]: df.sort_values(by='B')
-Out[22]: 
+Out[22]:
                    A         B         C         D
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804
 2013-01-04  0.721555 -0.706771 -1.039575  0.271860
@@ -245,18 +258,17 @@ Out[22]:
 2013-01-05 -0.424972  0.567020  0.276232 -1.087401
 ```
 
-## Selection
+## 选取数据
 
-**Note**：While standard Python / Numpy expressions for selecting and setting are intuitive and come in handy for interactive work, for production code, we recommend the optimized pandas data access methods, .at, .iat, .loc and .iloc.
-See the indexing documentation Indexing and Selecting Data and MultiIndex / Advanced Indexing.
+**Note**：尽管标准的Python/Numpy表达式语句在选取数据，更改数据对于`交互任务`很容易轻松，但是我们依旧推荐使用经过底层优化的pandas数据处理，数据获取方法，也就是`.at`,`,iat`,`.loc`,`.iloc`。更多信息查看索引文档-Indexing and Selecting Data and MultiIndex / Advanced Indexing.
 
-### Getting
+### 选取
 
-Selecting a single column, which yields a ``Series``, equivalent to ``df.A``:
+选择单列， Selecting a single column, which yields a `Series`, equivalent to `df.A`:
 
 ```python
 In [23]: df['A']
-Out[23]: 
+Out[23]:
 2013-01-01    0.469112
 2013-01-02    1.212112
 2013-01-03   -0.861849
@@ -270,14 +282,14 @@ Selecting via [], which slices the rows.
 
 ```python
 In [24]: df[0:3]
-Out[24]: 
+Out[24]:
                    A         B         C         D
 2013-01-01  0.469112 -0.282863 -1.509059 -1.135632
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804
 
 In [25]: df['20130102':'20130104']
-Out[25]: 
+Out[25]:
                    A         B         C         D
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804
@@ -292,7 +304,7 @@ For getting a cross section using a label:
 
 ```python
 In [26]: df.loc[dates[0]]
-Out[26]: 
+Out[26]:
 A    0.469112
 B   -0.282863
 C   -1.509059
@@ -304,7 +316,7 @@ Selecting on a multi-axis by label:
 
 ```python
 In [27]: df.loc[:,['A','B']]
-Out[27]: 
+Out[27]:
                    A         B
 2013-01-01  0.469112 -0.282863
 2013-01-02  1.212112 -0.173215
@@ -318,7 +330,7 @@ Showing label slicing, both endpoints are included:
 
 ```python
 In [28]: df.loc['20130102':'20130104',['A','B']]
-Out[28]: 
+Out[28]:
                    A         B
 2013-01-02  1.212112 -0.173215
 2013-01-03 -0.861849 -2.104569
@@ -329,7 +341,7 @@ Reduction in the dimensions of the returned object:
 
 ```python
 In [29]: df.loc['20130102',['A','B']]
-Out[29]: 
+Out[29]:
 A    1.212112
 B   -0.173215
 Name: 2013-01-02 00:00:00, dtype: float64
@@ -357,7 +369,7 @@ Select via the position of the passed integers:
 
 ```python
 In [32]: df.iloc[3]
-Out[32]: 
+Out[32]:
 A    0.721555
 B   -0.706771
 C   -1.039575
@@ -369,7 +381,7 @@ By integer slices, acting similar to numpy/python:
 
 ```python
 In [33]: df.iloc[3:5,0:2]
-Out[33]: 
+Out[33]:
                    A         B
 2013-01-04  0.721555 -0.706771
 2013-01-05 -0.424972  0.567020
@@ -379,7 +391,7 @@ By lists of integer position locations, similar to the numpy/python style:
 
 ```python
 In [34]: df.iloc[[1,2,4],[0,2]]
-Out[34]: 
+Out[34]:
                    A         C
 2013-01-02  1.212112  0.119209
 2013-01-03 -0.861849 -0.494929
@@ -390,7 +402,7 @@ For slicing rows explicitly:
 
 ```python
 In [35]: df.iloc[1:3,:]
-Out[35]: 
+Out[35]:
                    A         B         C         D
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804
@@ -400,7 +412,7 @@ For slicing columns explicitly:
 
 ```python
 In [36]: df.iloc[:,1:3]
-Out[36]: 
+Out[36]:
                    B         C
 2013-01-01 -0.282863 -1.509059
 2013-01-02 -0.173215  0.119209
@@ -426,11 +438,11 @@ Out[38]: -0.17321464905330858
 
 ### Boolean Indexing
 
-Using a single column’s values to select data.
+Using a single column's values to select data.
 
 ```python
 In [39]: df[df.A > 0]
-Out[39]: 
+Out[39]:
                    A         B         C         D
 2013-01-01  0.469112 -0.282863 -1.509059 -1.135632
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236
@@ -441,7 +453,7 @@ Selecting values from a DataFrame where a boolean condition is met.
 
 ```python
 In [40]: df[df > 0]
-Out[40]: 
+Out[40]:
                    A         B         C         D
 2013-01-01  0.469112       NaN       NaN       NaN
 2013-01-02  1.212112       NaN  0.119209       NaN
@@ -459,7 +471,7 @@ In [41]: df2 = df.copy()
 In [42]: df2['E'] = ['one', 'one','two','three','four','three']
 
 In [43]: df2
-Out[43]: 
+Out[43]:
                    A         B         C         D      E
 2013-01-01  0.469112 -0.282863 -1.509059 -1.135632    one
 2013-01-02  1.212112 -0.173215  0.119209 -1.044236    one
@@ -469,7 +481,7 @@ Out[43]:
 2013-01-06 -0.673690  0.113648 -1.478427  0.524988  three
 
 In [44]: df2[df2['E'].isin(['two','four'])]
-Out[44]: 
+Out[44]:
                    A         B         C         D     E
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804   two
 2013-01-05 -0.424972  0.567020  0.276232 -1.087401  four
@@ -483,7 +495,7 @@ Setting a new column automatically aligns the data by the indexes.
 In [45]: s1 = pd.Series([1,2,3,4,5,6], index=pd.date_range('20130102', periods=6))
 
 In [46]: s1
-Out[46]: 
+Out[46]:
 2013-01-02    1
 2013-01-03    2
 2013-01-04    3
@@ -517,7 +529,7 @@ The result of the prior setting operations.
 
 ```python
 In [51]: df
-Out[51]: 
+Out[51]:
                    A         B         C  D    F
 2013-01-01  0.000000  0.000000 -1.509059  5  NaN
 2013-01-02  1.212112 -0.173215  0.119209  5  1.0
@@ -535,7 +547,7 @@ In [52]: df2 = df.copy()
 In [53]: df2[df2 > 0] = -df2
 
 In [54]: df2
-Out[54]: 
+Out[54]:
                    A         B         C  D    F
 2013-01-01  0.000000  0.000000 -1.509059 -5  NaN
 2013-01-02 -1.212112 -0.173215 -0.119209 -5 -1.0
@@ -547,7 +559,7 @@ Out[54]:
 
 ## Missing Data
 
-pandas primarily uses the value np.nan to represent missing data. It is by default not included in computations. See the [Missing Data section](http://pandas.pydata.org/pandas-docs/stable/missing_data.html#missing-data  ).
+pandas primarily uses the value np.nan to represent missing data. It is by default not included in computations. See the [Missing Data section](http://pandas.pydata.org/pandas-docs/stable/missing_data.html#missing-data).
 
 Reindexing allows you to change/add/delete the index on a specified axis. This returns a copy of the data.
 
@@ -557,7 +569,7 @@ In [55]: df1 = df.reindex(index=dates[0:4], columns=list(df.columns) + ['E'])
 In [56]: df1.loc[dates[0]:dates[1],'E'] = 1
 
 In [57]: df1
-Out[57]: 
+Out[57]:
                    A         B         C  D    F    E
 2013-01-01  0.000000  0.000000 -1.509059  5  NaN  1.0
 2013-01-02  1.212112 -0.173215  0.119209  5  1.0  1.0
@@ -569,7 +581,7 @@ To drop any rows that have missing data.
 
 ```python
 In [58]: df1.dropna(how='any')
-Out[58]: 
+Out[58]:
                    A         B         C  D    F    E
 2013-01-02  1.212112 -0.173215  0.119209  5  1.0  1.0
 ```
@@ -578,7 +590,7 @@ Filling missing data.
 
 ```python
 In [59]: df1.fillna(value=5)
-Out[59]: 
+Out[59]:
                    A         B         C  D    F    E
 2013-01-01  0.000000  0.000000 -1.509059  5  5.0  1.0
 2013-01-02  1.212112 -0.173215  0.119209  5  1.0  1.0
@@ -590,7 +602,7 @@ To get the boolean mask where values are nan.
 
 ```python
 In [60]: pd.isna(df1)
-Out[60]: 
+Out[60]:
                 A      B      C      D      F      E
 2013-01-01  False  False  False  False   True  False
 2013-01-02  False  False  False  False  False  False
@@ -610,7 +622,7 @@ Performing a descriptive statistic:
 
 ```python
 In [61]: df.mean()
-Out[61]: 
+Out[61]:
 A   -0.004474
 B   -0.383981
 C   -0.687758
@@ -623,7 +635,7 @@ Same operation on the other axis:
 
 ```python
 In [62]: df.mean(1)
-Out[62]: 
+Out[62]:
 2013-01-01    0.872735
 2013-01-02    1.431621
 2013-01-03    0.707731
@@ -639,7 +651,7 @@ Operating with objects that have different dimensionality and need alignment. In
 In [63]: s = pd.Series([1,3,5,np.nan,6,8], index=dates).shift(2)
 
 In [64]: s
-Out[64]: 
+Out[64]:
 2013-01-01    NaN
 2013-01-02    NaN
 2013-01-03    1.0
@@ -649,7 +661,7 @@ Out[64]:
 Freq: D, dtype: float64
 
 In [65]: df.sub(s, axis='index')
-Out[65]: 
+Out[65]:
                    A         B         C    D    F
 2013-01-01       NaN       NaN       NaN  NaN  NaN
 2013-01-02       NaN       NaN       NaN  NaN  NaN
@@ -665,7 +677,7 @@ Applying functions to the data:
 
 ```python
 In [66]: df.apply(np.cumsum)
-Out[66]: 
+Out[66]:
                    A         B         C   D     F
 2013-01-01  0.000000  0.000000 -1.509059   5   NaN
 2013-01-02  1.212112 -0.173215 -1.389850  10   1.0
@@ -675,7 +687,7 @@ Out[66]:
 2013-01-06 -0.026844 -2.303886 -4.126549  30  15.0
 
 In [67]: df.apply(lambda x: x.max() - x.min())
-Out[67]: 
+Out[67]:
 A    2.073961
 B    2.671590
 C    1.785291
@@ -692,7 +704,7 @@ See more at [Histogramming and Discretization](http://pandas.pydata.org/pandas-d
 In [68]: s = pd.Series(np.random.randint(0, 7, size=10))
 
 In [69]: s
-Out[69]: 
+Out[69]:
 0    4
 1    2
 2    1
@@ -706,7 +718,7 @@ Out[69]:
 dtype: int64
 
 In [70]: s.value_counts()
-Out[70]: 
+Out[70]:
 4    5
 6    2
 2    2
@@ -722,7 +734,7 @@ Series is equipped with a set of string processing methods in the str attribute 
 In [71]: s = pd.Series(['A', 'B', 'C', 'Aaba', 'Baca', np.nan, 'CABA', 'dog', 'cat'])
 
 In [72]: s.str.lower()
-Out[72]: 
+Out[72]:
 0       a
 1       b
 2       c
@@ -749,7 +761,7 @@ Concatenating pandas objects together with [concat()](http://pandas.pydata.org/p
 In [73]: df = pd.DataFrame(np.random.randn(10, 4))
 
 In [74]: df
-Out[74]: 
+Out[74]:
           0         1         2         3
 0 -0.548702  1.467327 -1.015962 -0.483075
 1  1.637550 -1.217659 -0.291519 -1.745505
@@ -766,7 +778,7 @@ Out[74]:
 In [75]: pieces = [df[:3], df[3:7], df[7:]]
 
 In [76]: pd.concat(pieces)
-Out[76]: 
+Out[76]:
           0         1         2         3
 0 -0.548702  1.467327 -1.015962 -0.483075
 1  1.637550 -1.217659 -0.291519 -1.745505
@@ -790,19 +802,19 @@ In [77]: left = pd.DataFrame({'key': ['foo', 'foo'], 'lval': [1, 2]})
 In [78]: right = pd.DataFrame({'key': ['foo', 'foo'], 'rval': [4, 5]})
 
 In [79]: left
-Out[79]: 
+Out[79]:
    key  lval
 0  foo     1
 1  foo     2
 
 In [80]: right
-Out[80]: 
+Out[80]:
    key  rval
 0  foo     4
 1  foo     5
 
 In [81]: pd.merge(left, right, on='key')
-Out[81]: 
+Out[81]:
    key  lval  rval
 0  foo     1     4
 1  foo     1     5
@@ -818,19 +830,19 @@ In [82]: left = pd.DataFrame({'key': ['foo', 'bar'], 'lval': [1, 2]})
 In [83]: right = pd.DataFrame({'key': ['foo', 'bar'], 'rval': [4, 5]})
 
 In [84]: left
-Out[84]: 
+Out[84]:
    key  lval
 0  foo     1
 1  bar     2
 
 In [85]: right
-Out[85]: 
+Out[85]:
    key  rval
 0  foo     4
 1  bar     5
 
 In [86]: pd.merge(left, right, on='key')
-Out[86]: 
+Out[86]:
    key  lval  rval
 0  foo     1     4
 1  bar     2     5
@@ -844,7 +856,7 @@ Append rows to a dataframe. See the [Appending](http://pandas.pydata.org/pandas-
 In [87]: df = pd.DataFrame(np.random.randn(8, 4), columns=['A','B','C','D'])
 
 In [88]: df
-Out[88]: 
+Out[88]:
           A         B         C         D
 0  1.346061  1.511763  1.627081 -0.990582
 1 -0.441652  1.211526  0.268520  0.024580
@@ -858,7 +870,7 @@ Out[88]:
 In [89]: s = df.iloc[3]
 
 In [90]: df.append(s, ignore_index=True)
-Out[90]: 
+Out[90]:
           A         B         C         D
 0  1.346061  1.511763  1.627081 -0.990582
 1 -0.441652  1.211526  0.268520  0.024580
@@ -873,7 +885,7 @@ Out[90]:
 
 ## Grouping
 
-By “group by” we are referring to a process involving one or more of the following steps:
+By "group by" we are referring to a process involving one or more of the following steps:
 
 - **Splitting** the data into groups based on some criteria
 - **Applying** a function to each group independently
@@ -888,10 +900,10 @@ In [91]: df = pd.DataFrame({'A' : ['foo', 'bar', 'foo', 'bar',
    ....:                           'two', 'two', 'one', 'three'],
    ....:                    'C' : np.random.randn(8),
    ....:                    'D' : np.random.randn(8)})
-   ....: 
+   ....:
 
 In [92]: df
-Out[92]: 
+Out[92]:
      A      B         C         D
 0  foo    one -1.202872 -0.055224
 1  bar    one -1.814470  2.395985
@@ -907,18 +919,18 @@ Grouping and then applying the sum() function to the resulting groups.
 
 ```python
 In [93]: df.groupby('A').sum()
-Out[93]: 
+Out[93]:
             C        D
 A                     
 bar -2.802588  2.42611
 foo  3.146492 -0.63958
 ```
 
-Grouping by multiple columns forms a hierarchical index, and again we can apply the ``sum`` function.
+Grouping by multiple columns forms a hierarchical index, and again we can apply the `sum` function.
 
 ```python
 In [94]: df.groupby(['A','B']).sum()
-Out[94]: 
+Out[94]:
                   C         D
 A   B                        
 bar one   -1.814470  2.395985
@@ -940,7 +952,7 @@ In [95]: tuples = list(zip(*[['bar', 'bar', 'baz', 'baz',
    ....:                      'foo', 'foo', 'qux', 'qux'],
    ....:                     ['one', 'two', 'one', 'two',
    ....:                      'one', 'two', 'one', 'two']]))
-   ....: 
+   ....:
 
 In [96]: index = pd.MultiIndex.from_tuples(tuples, names=['first', 'second'])
 
@@ -949,7 +961,7 @@ In [97]: df = pd.DataFrame(np.random.randn(8, 2), index=index, columns=['A', 'B'
 In [98]: df2 = df[:4]
 
 In [99]: df2
-Out[99]: 
+Out[99]:
                      A         B
 first second                    
 bar   one     0.029399 -0.542108
@@ -958,13 +970,13 @@ baz   one    -1.575170  1.771208
       two     0.816482  1.100230
 ```
 
-The [stack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.stack.html#pandas.DataFrame.stack) method “compresses” a level in the DataFrame’s columns.
+The [stack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.stack.html#pandas.DataFrame.stack) method "compresses" a level in the DataFrame's columns.
 
 ```python
 In [100]: stacked = df2.stack()
 
 In [101]: stacked
-Out[101]: 
+Out[101]:
 first  second   
 bar    one     A    0.029399
                B   -0.542108
@@ -977,11 +989,11 @@ baz    one     A   -1.575170
 dtype: float64
 ```
 
-With a “stacked” DataFrame or Series (having a MultiIndex as the ``index``), the inverse operation of [stack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.stack.html#pandas.DataFrame.stack) is [unstack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.unstack.html#pandas.DataFrame.unstack), which by default unstacks the last level:
+With a "stacked" DataFrame or Series (having a MultiIndex as the `index`), the inverse operation of [stack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.stack.html#pandas.DataFrame.stack) is [unstack()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.unstack.html#pandas.DataFrame.unstack), which by default unstacks the last level:
 
 ```python
 In [102]: stacked.unstack()
-Out[102]: 
+Out[102]:
                      A         B
 first second                    
 bar   one     0.029399 -0.542108
@@ -990,7 +1002,7 @@ baz   one    -1.575170  1.771208
       two     0.816482  1.100230
 
 In [103]: stacked.unstack(1)
-Out[103]: 
+Out[103]:
 second        one       two
 first                      
 bar   A  0.029399  0.282696
@@ -999,7 +1011,7 @@ baz   A -1.575170  0.816482
       B  1.771208  1.100230
 
 In [104]: stacked.unstack(0)
-Out[104]: 
+Out[104]:
 first          bar       baz
 second                      
 one    A  0.029399 -1.575170
@@ -1018,10 +1030,10 @@ In [105]: df = pd.DataFrame({'A' : ['one', 'one', 'two', 'three'] * 3,
    .....:                    'C' : ['foo', 'foo', 'foo', 'bar', 'bar', 'bar'] * 2,
    .....:                    'D' : np.random.randn(12),
    .....:                    'E' : np.random.randn(12)})
-   .....: 
+   .....:
 
 In [106]: df
-Out[106]: 
+Out[106]:
         A  B    C         D         E
 0     one  A  foo  1.418757 -0.179666
 1     one  B  foo -1.879024  1.291836
@@ -1041,7 +1053,7 @@ We can produce pivot tables from this data very easily:
 
 ```python
 In [107]: pd.pivot_table(df, values='D', index=['A', 'B'], columns=['C'])
-Out[107]: 
+Out[107]:
 C             bar       foo
 A     B                    
 one   A -0.773723  1.418757
@@ -1065,7 +1077,7 @@ In [108]: rng = pd.date_range('1/1/2012', periods=100, freq='S')
 In [109]: ts = pd.Series(np.random.randint(0, 500, len(rng)), index=rng)
 
 In [110]: ts.resample('5Min').sum()
-Out[110]: 
+Out[110]:
 2012-01-01    25083
 Freq: 5T, dtype: int64
 ```
@@ -1078,7 +1090,7 @@ In [111]: rng = pd.date_range('3/6/2012 00:00', periods=5, freq='D')
 In [112]: ts = pd.Series(np.random.randn(len(rng)), rng)
 
 In [113]: ts
-Out[113]: 
+Out[113]:
 2012-03-06    0.464000
 2012-03-07    0.227371
 2012-03-08   -0.496922
@@ -1089,7 +1101,7 @@ Freq: D, dtype: float64
 In [114]: ts_utc = ts.tz_localize('UTC')
 
 In [115]: ts_utc
-Out[115]: 
+Out[115]:
 2012-03-06 00:00:00+00:00    0.464000
 2012-03-07 00:00:00+00:00    0.227371
 2012-03-08 00:00:00+00:00   -0.496922
@@ -1102,7 +1114,7 @@ Converting to another time zone:
 
 ```python
 In [116]: ts_utc.tz_convert('US/Eastern')
-Out[116]: 
+Out[116]:
 2012-03-05 19:00:00-05:00    0.464000
 2012-03-06 19:00:00-05:00    0.227371
 2012-03-07 19:00:00-05:00   -0.496922
@@ -1119,7 +1131,7 @@ In [117]: rng = pd.date_range('1/1/2012', periods=5, freq='M')
 In [118]: ts = pd.Series(np.random.randn(len(rng)), index=rng)
 
 In [119]: ts
-Out[119]: 
+Out[119]:
 2012-01-31   -1.134623
 2012-02-29   -1.561819
 2012-03-31   -0.260838
@@ -1130,7 +1142,7 @@ Freq: M, dtype: float64
 In [120]: ps = ts.to_period()
 
 In [121]: ps
-Out[121]: 
+Out[121]:
 2012-01   -1.134623
 2012-02   -1.561819
 2012-03   -0.260838
@@ -1139,7 +1151,7 @@ Out[121]:
 Freq: M, dtype: float64
 
 In [122]: ps.to_timestamp()
-Out[122]: 
+Out[122]:
 2012-01-01   -1.134623
 2012-02-01   -1.561819
 2012-03-01   -0.260838
@@ -1158,7 +1170,7 @@ In [124]: ts = pd.Series(np.random.randn(len(prng)), prng)
 In [125]: ts.index = (prng.asfreq('M', 'e') + 1).asfreq('H', 's') + 9
 
 In [126]: ts.head()
-Out[126]: 
+Out[126]:
 1990-03-01 09:00   -0.902937
 1990-06-01 09:00    0.068159
 1990-09-01 09:00   -0.057873
@@ -1181,7 +1193,7 @@ Convert the raw grades to a categorical data type.
 In [128]: df["grade"] = df["raw_grade"].astype("category")
 
 In [129]: df["grade"]
-Out[129]: 
+Out[129]:
 0    a
 1    b
 2    b
@@ -1198,13 +1210,13 @@ Rename the categories to more meaningful names (assigning to Series.cat.categori
 In [130]: df["grade"].cat.categories = ["very good", "good", "very bad"]
 ```
 
-Reorder the categories and simultaneously add the missing categories (methods under ``Series .cat`` return a new ``Series`` by default).
+Reorder the categories and simultaneously add the missing categories (methods under `Series .cat` return a new `Series` by default).
 
 ```python
 In [131]: df["grade"] = df["grade"].cat.set_categories(["very bad", "bad", "medium", "good", "very good"])
 
 In [132]: df["grade"]
-Out[132]: 
+Out[132]:
 0    very good
 1         good
 2         good
@@ -1219,7 +1231,7 @@ Sorting is per order in the categories, not lexical order.
 
 ```python
 In [133]: df.sort_values(by="grade")
-Out[133]: 
+Out[133]:
    id raw_grade      grade
 5   6         e   very bad
 1   2         b       good
@@ -1233,7 +1245,7 @@ Grouping by a categorical column also shows empty categories.
 
 ```python
 In [134]: df.groupby("grade").size()
-Out[134]: 
+Out[134]:
 grade
 very bad     1
 bad          0
@@ -1258,13 +1270,12 @@ Out[137]: <matplotlib.axes._subplots.AxesSubplot at 0x7f213444c048>
 
 ![基本走势图](static/images/series_plot_basic.png)
 
-
 On a DataFrame, the [plot()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.plot.html#pandas.DataFrame.plot) method is a convenience to plot all of the columns with labels:
 
 ```python
 In [138]: df = pd.DataFrame(np.random.randn(1000, 4), index=ts.index,
    .....:                   columns=['A', 'B', 'C', 'D'])
-   .....: 
+   .....:
 
 In [139]: df = df.cumsum()
 
@@ -1288,7 +1299,7 @@ In [141]: df.to_csv('foo.csv')
 
 ```python
 In [142]: pd.read_csv('foo.csv')
-Out[142]: 
+Out[142]:
      Unnamed: 0          A          B         C          D
 0    2000-01-01   0.266457  -0.399641 -0.219582   1.186860
 1    2000-01-02  -1.170732  -0.345873  1.653061  -0.282953
@@ -1323,7 +1334,7 @@ Reading from a HDF5 Store.
 
 ```python
 In [144]: pd.read_hdf('foo.h5','df')
-Out[144]: 
+Out[144]:
                     A          B         C          D
 2000-01-01   0.266457  -0.399641 -0.219582   1.186860
 2000-01-02  -1.170732  -0.345873  1.653061  -0.282953
@@ -1358,7 +1369,7 @@ Reading from an excel file.
 
 ```python
 In [146]: pd.read_excel('foo.xlsx', 'Sheet1', index_col=None, na_values=['NA'])
-Out[146]: 
+Out[146]:
                     A          B         C          D
 2000-01-01   0.266457  -0.399641 -0.219582   1.186860
 2000-01-02  -1.170732  -0.345873  1.653061  -0.282953
