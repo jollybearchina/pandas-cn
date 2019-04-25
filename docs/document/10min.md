@@ -296,7 +296,7 @@ Out[25]:
 2013-01-04  0.721555 -0.706771 -1.039575  0.271860
 ```
 
-### 根据Label(标签)选取数据
+### 选取数据(根据Label(标签))
 
 查看更多在[Selection by Label](http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-label).
 
@@ -337,7 +337,7 @@ Out[28]:
 2013-01-04  0.721555 -0.706771
 ```
 
-Reduction in the dimensions of the returned object:
+减少返回值(aka返回的对象)的维度:
 
 ```python
 In [29]: df.loc['20130102',['A','B']]
@@ -347,25 +347,23 @@ B   -0.173215
 Name: 2013-01-02 00:00:00, dtype: float64
 ```
 
-For getting a scalar value:
+获取一个`标量值`:
 
 ```python
 In [30]: df.loc[dates[0],'A']
 Out[30]: 0.46911229990718628
 ```
 
-For getting fast access to a scalar (equivalent to the prior method):
+获取一个`标量值`(同上，但是更加高效)：
 
 ```python
 In [31]: df.at[dates[0],'A']
 Out[31]: 0.46911229990718628
 ```
 
-### Selection by Position
+### 选取数据(使用位置)
 
-See more in [Selection by Position](http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-integer).
-
-Select via the position of the passed integers:
+查看更多[Selection by Position](http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-integer). 使用整型值来描述位置，从而选取数据:
 
 ```python
 In [32]: df.iloc[3]
@@ -377,7 +375,7 @@ D    0.271860
 Name: 2013-01-04 00:00:00, dtype: float64
 ```
 
-By integer slices, acting similar to numpy/python:
+使用类numpy/python风格的使用`整数`来切片:
 
 ```python
 In [33]: df.iloc[3:5,0:2]
@@ -387,7 +385,7 @@ Out[33]:
 2013-01-05 -0.424972  0.567020
 ```
 
-By lists of integer position locations, similar to the numpy/python style:
+使用类numpy/python风格的使用`整数的列表`来选取数据:
 
 ```python
 In [34]: df.iloc[[1,2,4],[0,2]]
@@ -398,7 +396,7 @@ Out[34]:
 2013-01-05 -0.424972  0.276232
 ```
 
-For slicing rows explicitly:
+显式地行切片选择(这里的显式地是指后面显式地使用了`：`，而不是省略，隐式的使用)：
 
 ```python
 In [35]: df.iloc[1:3,:]
@@ -408,7 +406,7 @@ Out[35]:
 2013-01-03 -0.861849 -2.104569 -0.494929  1.071804
 ```
 
-For slicing columns explicitly:
+显式地列切片操作(这里不可以省略前面的`：`)：
 
 ```python
 In [36]: df.iloc[:,1:3]
@@ -422,23 +420,23 @@ Out[36]:
 2013-01-06  0.113648 -1.478427
 ```
 
-For getting a value explicitly:
+获取一个单值(标量):
 
 ```python
 In [37]: df.iloc[1,1]
 Out[37]: -0.17321464905330858
 ```
 
-For getting fast access to a scalar (equivalent to the prior method):
+获取一个单值(标量),同上但是更快:
 
 ```python
 In [38]: df.iat[1,1]
 Out[38]: -0.17321464905330858
 ```
 
-### Boolean Indexing
+### 选取数据(使用布尔值):
 
-Using a single column's values to select data.
+选取数据，通过一个单列的值(满足条件的值):
 
 ```python
 In [39]: df[df.A > 0]
@@ -449,7 +447,7 @@ Out[39]:
 2013-01-04  0.721555 -0.706771 -1.039575  0.271860
 ```
 
-Selecting values from a DataFrame where a boolean condition is met.
+选取数据，当布尔条件结果返回是True：
 
 ```python
 In [40]: df[df > 0]
@@ -463,7 +461,7 @@ Out[40]:
 2013-01-06       NaN  0.113648       NaN  0.524988
 ```
 
-Using the [isin()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.isin.html#pandas.Series.isin) method for filtering:
+使用[isin()](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.isin.html#pandas.Series.isin)函数来筛选:
 
 ```python
 In [41]: df2 = df.copy()
@@ -487,9 +485,9 @@ Out[44]:
 2013-01-05 -0.424972  0.567020  0.276232 -1.087401  four
 ```
 
-### Setting
+### 赋值
 
-Setting a new column automatically aligns the data by the indexes.
+给一列赋值，使用其索引来排列整齐.
 
 ```python
 In [45]: s1 = pd.Series([1,2,3,4,5,6], index=pd.date_range('20130102', periods=6))
@@ -507,25 +505,25 @@ Freq: D, dtype: int64
 In [47]: df['F'] = s1
 ```
 
-Setting values by label:
+赋值，使用Lable：
 
 ```python
 In [48]: df.at[dates[0],'A'] = 0
 ```
 
-Setting values by position:
+赋值，使用位置:
 
 ```python
 In [49]: df.iat[0,1] = 0
 ```
 
-Setting by assigning with a NumPy array:
+NumPy数组:
 
 ```python
 In [50]: df.loc[:,'D'] = np.array([5] * len(df))
 ```
 
-The result of the prior setting operations.
+下面是上面赋值操作之后的结果.
 
 ```python
 In [51]: df
@@ -539,7 +537,7 @@ Out[51]:
 2013-01-06 -0.673690  0.113648 -1.478427  5  5.0
 ```
 
-A where operation with setting.
+赋值，使用布尔条件.
 
 ```python
 In [52]: df2 = df.copy()
