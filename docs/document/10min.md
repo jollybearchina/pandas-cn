@@ -555,11 +555,11 @@ Out[54]:
 2013-01-06 -0.673690 -0.113648 -1.478427 -5 -5.0
 ```
 
-## Missing Data
+## 缺失值
 
-pandas primarily uses the value np.nan to represent missing data. It is by default not included in computations. See the [Missing Data section](http://pandas.pydata.org/pandas-docs/stable/missing_data.html#missing-data).
+pandas默认地使用np.nan对象来代表缺失值，在默认情况下，他不可以参与计算。在[Missing Data section](http://pandas.pydata.org/pandas-docs/stable/missing_data.html#missing-data)
 
-Reindexing allows you to change/add/delete the index on a specified axis. This returns a copy of the data.
+查看更多. 重索引函数reindx()能够让你改变/添加/删除可指定的任意轴上的索引。这样会生成并返回一个新的副本。
 
 ```python
 In [55]: df1 = df.reindex(index=dates[0:4], columns=list(df.columns) + ['E'])
@@ -575,7 +575,7 @@ Out[57]:
 2013-01-04  0.721555 -0.706771 -1.039575  5  3.0  NaN
 ```
 
-To drop any rows that have missing data.
+删除含有NaN的所有行。
 
 ```python
 In [58]: df1.dropna(how='any')
@@ -584,7 +584,7 @@ Out[58]:
 2013-01-02  1.212112 -0.173215  0.119209  5  1.0  1.0
 ```
 
-Filling missing data.
+填充NaN。
 
 ```python
 In [59]: df1.fillna(value=5)
@@ -596,7 +596,7 @@ Out[59]:
 2013-01-04  0.721555 -0.706771 -1.039575  5  3.0  5.0
 ```
 
-To get the boolean mask where values are nan.
+对是否是NaN进行布尔判定(是NaN返回True,否则返回False)：
 
 ```python
 In [60]: pd.isna(df1)
@@ -608,15 +608,15 @@ Out[60]:
 2013-01-04  False  False  False  False  False   True
 ```
 
-## Operations
+## 操作
 
-See the [Basic section on Binary Ops](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics-binop).
+在[Basic section on Binary Ops](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics-binop)查看更多.
 
-### Stats
+### 统计量
 
-Operations in general exclude missing data.
+排除NaN的操作.
 
-Performing a descriptive statistic:
+计算一个统计量(这里的统计量是均值):
 
 ```python
 In [61]: df.mean()
@@ -629,7 +629,7 @@ F    3.000000
 dtype: float64
 ```
 
-Same operation on the other axis:
+计算同一个统计量(指定另外一条轴进行计算):
 
 ```python
 In [62]: df.mean(1)
@@ -643,7 +643,7 @@ Out[62]:
 Freq: D, dtype: float64
 ```
 
-Operating with objects that have different dimensionality and need alignment. In addition, pandas automatically broadcasts along the specified dimension.
+操作有着不同维度并且需要对齐的对象(可以是Series，也可以是DataFrame)，pandas会自动沿着特定轴进行广播：
 
 ```python
 In [63]: s = pd.Series([1,3,5,np.nan,6,8], index=dates).shift(2)
@@ -669,9 +669,9 @@ Out[65]:
 2013-01-06       NaN       NaN       NaN  NaN  NaN
 ```
 
-### Apply
+### 应用
 
-Applying functions to the data:
+将函数应用到数据对象上:
 
 ```python
 In [66]: df.apply(np.cumsum)
@@ -694,9 +694,9 @@ F    4.000000
 dtype: float64
 ```
 
-### Histogramming
+### 计数(直方化，统计学术语，大意是得到其不同种类的各自的计数)
 
-See more at [Histogramming and Discretization](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics-discretization).
+在[Histogramming and Discretization](http://pandas.pydata.org/pandas-docs/stable/basics.html#basics-discretization)查看更多.
 
 ```python
 In [68]: s = pd.Series(np.random.randint(0, 7, size=10))
@@ -724,9 +724,9 @@ Out[70]:
 dtype: int64
 ```
 
-### String Methods
+### 字符串函数
 
-Series is equipped with a set of string processing methods in the str attribute that make it easy to operate on each element of the array, as in the code snippet below. Note that pattern-matching in str generally uses [regular expressions](https://docs.python.org/3/library/re.html) by default (and in some cases always uses them). See more at [Vectorized String Methods](http://pandas.pydata.org/pandas-docs/stable/text.html#text-string-methods).
+Series对象包含了一堆的对于字符串属性的字符串处理函数，目的是能够对数组的所有元素进行操作，如同下面的代码片段。注意字符串的模式匹配是把[正则表达式regular expressions](https://docs.python.org/3/library/re.html)当作默认(并且在一些情况下只使用正则表达式). 在[Vectorized String Methods](http://pandas.pydata.org/pandas-docs/stable/text.html#text-string-methods)查看更多.
 
 ```python
 In [71]: s = pd.Series(['A', 'B', 'C', 'Aaba', 'Baca', np.nan, 'CABA', 'dog', 'cat'])
